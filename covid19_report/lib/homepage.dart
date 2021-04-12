@@ -69,7 +69,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _lineChartSource = <charts.Series<Report, int>>[];
-    _dataSources;
+    _dataSources();
   }
 
   @override
