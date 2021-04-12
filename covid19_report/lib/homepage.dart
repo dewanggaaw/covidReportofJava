@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
+// import 'package:http/http.dart';
 
 class HomePage extends StatefulWidget {
   final Widget child;
@@ -10,8 +11,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<charts.Series<Report, int>> _seriesLineData;
-
+  List<charts.Series<Report, int>> _lineChartSource;
+// var url = Uri.https(
+  //     "https://data.covid19.go.id/public/api/prov_detail_JAWA_TIMUR.json");
   _dataSources() {
     var keseluruhan = [
       new Report(1, 100),
@@ -34,7 +36,7 @@ class _HomePageState extends State<HomePage> {
       new Report(4, 35),
       new Report(5, 30),
     ];
-    _seriesLineData.add(
+    _lineChartSource.add(
       charts.Series(
         colorFn: (__, _) => charts.ColorUtil.fromDartColor(Color(0xFFF44336)),
         id: 'keseluruhan',
@@ -43,7 +45,7 @@ class _HomePageState extends State<HomePage> {
         measureFn: (Report report, _) => report.jumlah,
       ),
     );
-    _seriesLineData.add(
+    _lineChartSource.add(
       charts.Series(
         colorFn: (__, _) => charts.ColorUtil.fromDartColor(Color(0xFF4CAF50)),
         id: 'sembuh',
@@ -52,7 +54,7 @@ class _HomePageState extends State<HomePage> {
         measureFn: (Report report, _) => report.jumlah,
       ),
     );
-    _seriesLineData.add(
+    _lineChartSource.add(
       charts.Series(
         colorFn: (__, _) => charts.ColorUtil.fromDartColor(Color(0xFF000000)),
         id: 'kematian',
@@ -66,8 +68,8 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _seriesLineData = <charts.Series<Report, int>>[];
-    _dataSources();
+    _lineChartSource = <charts.Series<Report, int>>[];
+    _dataSources;
   }
 
   @override
@@ -78,26 +80,37 @@ class _HomePageState extends State<HomePage> {
           title: Text('COVID-19 Reports of Java Island'),
         ),
         body: Center(
-          child: charts.LineChart(
-            _dataSources(),
-            defaultRenderer:
-                new charts.LineRendererConfig(includeArea: true, stacked: true),
-            animate: true,
-            animationDuration: Duration(seconds: 5),
-            behaviors: [
-              new charts.ChartTitle('Hari',
-                  behaviorPosition: charts.BehaviorPosition.bottom,
-                  titleOutsideJustification:
-                      charts.OutsideJustification.middleDrawArea),
-              new charts.ChartTitle('Jumlah',
-                  behaviorPosition: charts.BehaviorPosition.start,
-                  titleOutsideJustification:
-                      charts.OutsideJustification.middleDrawArea),
-              new charts.ChartTitle('Kasus Covid',
-                  behaviorPosition: charts.BehaviorPosition.bottom,
-                  titleOutsideJustification:
-                      charts.OutsideJustification.middleDrawArea),
-            ],
+          child: Container(
+            child: Center(
+              child: Column(
+                children: <Widget>[
+                  Text('Report of COVID-19 this month'),
+                  Expanded(
+                    child: charts.LineChart(
+                      _lineChartSource,
+                      defaultRenderer: new charts.LineRendererConfig(
+                          includeArea: true, stacked: true),
+                      animate: true,
+                      animationDuration: Duration(seconds: 5),
+                      behaviors: [
+                        new charts.ChartTitle('Hari',
+                            behaviorPosition: charts.BehaviorPosition.bottom,
+                            titleOutsideJustification:
+                                charts.OutsideJustification.middleDrawArea),
+                        new charts.ChartTitle('Jumlah',
+                            behaviorPosition: charts.BehaviorPosition.start,
+                            titleOutsideJustification:
+                                charts.OutsideJustification.middleDrawArea),
+                        new charts.ChartTitle('Kasus Covid',
+                            behaviorPosition: charts.BehaviorPosition.end,
+                            titleOutsideJustification:
+                                charts.OutsideJustification.middleDrawArea),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ),
